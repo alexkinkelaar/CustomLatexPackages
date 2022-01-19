@@ -1,0 +1,158 @@
+%%Identification
+%%The package identifies itself and the LaTeX version needed
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{outlinesExtended}
+\RequirePackage{ifthen}
+\RequirePackage{enumitem}
+\makeatletter
+% \ol@type stores the default list style
+\newcommand{\ol@type}{itemize}
+% \ol@typei ... store the (list) environment names used in outlines
+\newcommand{\outlinei}{\ol@type}
+\newcommand{\outlineii}{\ol@type}
+\newcommand{\outlineiii}{\ol@type}
+\newcommand{\outlineiv}{\ol@type}
+\newcommand{\outlinev}{\ol@type}
+\newcommand{\outlinevi}{\ol@type}
+% \ol@inci ..., \ol@deci ... increase/decrease the indentation level
+\newcommand{\ol@inci}{\begin{\outlinei}}
+\newcommand{\ol@deci}{\end{\outlinei}}
+\newcommand{\ol@incii}{\begin{\outlineii}}
+\newcommand{\ol@decii}{\end{\outlineii}}
+\newcommand{\ol@inciii}{\begin{\outlineiii}}
+\newcommand{\ol@deciii}{\end{\outlineiii}}
+\newcommand{\ol@inciv}{\begin{\outlineiv}}
+\newcommand{\ol@deciv}{\end{\outlineiv}}
+\newcommand{\ol@incv}{\begin{\outlinev}}
+\newcommand{\ol@decv}{\end{\outlinev}}
+\newcommand{\ol@incvi}{\begin{\outlinevi}}
+\newcommand{\ol@decvi}{\end{\outlinevi}}
+
+% \ol@toz, \ol@toi ... "transition" to indentation level 0..4 by opening or
+% closing nested list levels as needed.
+% They are dynamically modified according to the current level.
+\newcommand{\ol@toz}{}
+\newcommand{\ol@toi}{}
+\newcommand{\ol@toii}{}
+\newcommand{\ol@toiii}{}
+\newcommand{\ol@toiv}{}
+\newcommand{\ol@tov}{}
+\newcommand{\ol@tovi}{}
+% \ol@commands{C0}{C1}{C2}{C3}{C4} set the level transition commands 
+% above to C0..C4
+\newcommand{\ol@commands}[7]{%
+  \renewcommand{\ol@toz}{#1}%
+  \renewcommand{\ol@toi}{#2}%
+  \renewcommand{\ol@toii}{#3}%
+  \renewcommand{\ol@toiii}{#4}%
+  \renewcommand{\ol@toiv}{#5}%
+  \renewcommand{\ol@tov}{#6}%  
+  \renewcommand{\ol@tovi}{#7}%
+
+}
+
+% \ol@exit resets transition commands.  This is not mandatory, just cleaner.
+\newcommand{\ol@exit}{%
+  \ol@commands{}{}{}{}{}{}{}}
+% \ol@z, \ol@i ... update all transitions for level 0..4
+\newcommand{\ol@z}{%
+  \ol@commands%
+    {}%
+  	{\ol@inci}%
+	{\ol@inci\ol@incii}%
+    {\ol@inci\ol@incii\ol@inciii}%
+    {\ol@inci\ol@incii\ol@inciii\ol@inciv}%
+    {\ol@inci\ol@incii\ol@inciii\ol@inciv\ol@incv}
+    {\ol@inci\ol@incii\ol@inciii\ol@inciv\ol@incv\ol@incvi}
+}
+\newcommand{\ol@i}{%
+  \ol@commands%
+    {\ol@deci}%
+    {}%
+    {\ol@incii}%
+    {\ol@incii\ol@inciii}%
+    {\ol@incii\ol@inciii\ol@inciv}%
+    {\ol@incii\ol@inciii\ol@inciv\ol@incv}
+    {\ol@incii\ol@inciii\ol@inciv\ol@incv\ol@incvi}
+}
+\newcommand{\ol@ii}{%
+  \ol@commands%
+    {\ol@decii\ol@deci}%
+    {\ol@decii}%
+    {}%
+    {\ol@inciii}%
+    {\ol@inciii\ol@inciv}%
+    {\ol@inciii\ol@inciv\ol@incv}
+    {\ol@inciii\ol@inciv\ol@incv\ol@incvi}
+}
+\newcommand{\ol@iii}{%
+  \ol@commands%
+    {\ol@deciii\ol@decii\ol@deci}%
+    {\ol@deciii\ol@decii}%
+    {\ol@deciii}%
+    {}%
+    {\ol@inciv}%
+    {\ol@inciv\ol@incv}
+    {\ol@inciv\ol@incv\ol@incvi}
+}
+\newcommand{\ol@iv}{%
+  \ol@commands%
+    {\ol@deciv\ol@deciii\ol@decii\ol@deci}%
+    {\ol@deciv\ol@deciii\ol@decii}%
+	{\ol@deciv\ol@deciii}%
+	{\ol@deciv}%
+	{}%
+    {\ol@incv}
+    {\ol@incv\ol@incvi}
+}
+\newcommand{\ol@v}{%
+    \ol@commands%
+        {\ol@decv\ol@deciv\ol@deciii\ol@decii\ol@deci}%
+        {\ol@decv\ol@deciv\ol@deciii\ol@decii}%
+	    {\ol@decv\ol@deciv\ol@deciii}%
+	    {\ol@decv\ol@deciv}%
+	    {\ol@decv}%
+	    {}
+	    {\ol@incvi}
+}
+\newcommand{\ol@vi}{%
+    \ol@commands%
+        {\ol@decvi\ol@decv\ol@deciv\ol@deciii\ol@decii\ol@deci}%
+        {\ol@decvi\ol@decv\ol@deciv\ol@deciii\ol@decii}%
+	    {\ol@decvi\ol@decv\ol@deciv\ol@deciii}%
+	    {\ol@decvi\ol@decv\ol@deciv}%
+	    {\ol@decvi\ol@decv}%
+	    {\ol@decvi}
+	    {}
+}
+
+% the outline environment provides commands \1..\4 for 
+% introducing items at level 1..4, and \0 for normal paragraphs 
+% within the outline section.
+\newenvironment{outline}[1][]{%
+  \ifthenelse{\equal{#1}{}}{}{\renewcommand{\ol@type}{#1}}%
+  \ol@z%
+  \newcommand{\0}{\ol@toz\ol@z}%
+  \newcommand{\1}{\ol@toi\ol@i\item}%
+  \newcommand{\2}{\ol@toii\ol@ii\item}%
+  \newcommand{\3}{\ol@toiii\ol@iii\item}%  
+  \newcommand{\4}{\ol@toiv\ol@iv\item}%  
+  \newcommand{\5}{\ol@tov\ol@v\item}%
+  \newcommand{\6}{\ol@tovi\ol@vi\item}%
+}{%
+  \ol@toz\ol@exit%
+}
+
+%%CHANGING OUTLINE DEFAULTS TO DESIRED
+\setenumerate[1]{label=\Roman*.}
+\setenumerate[2]{label=\Alph*.}
+\setenumerate[3]{label=\roman*.}
+\setenumerate[4]{label=\alph*.}
+\renewcommand{\outlinei}{enumerate}
+\renewcommand{\outlineii}{enumerate}
+\renewcommand{\outlineiii}{enumerate}
+\renewcommand{\outlineiv}{enumerate}
+
+
+\makeatother
+

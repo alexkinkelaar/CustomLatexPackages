@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{outlinesExtended}
+\usepackage{enumitem}
+
+\title{Extended Outlines Package}
+\author{Alex Kinkelaar}
+\date{ }
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This document provides implementations for the Extended Outlines package. This package extends the implementation of the `outlines` package to include deeper usage levels.
+
+Additionally, I am forcing the structure of the outline to be one way by default, as I for my intended use this is helpful. 
+
+\section{Example}
+\begin{outline}
+\0 Original 4 Level Structure:
+\1 Level 1
+\2 Level 2
+\3 Level 3
+\4 level 4
+\0 Modified 6 Level Structure:
+\1 Level 1
+\2 Level 2
+\2 Level 2
+\3 Level 3
+\3 Level 3
+\4 Level 4
+\4 Level 4
+\5 Level 5
+\6 Level 6
+\end{outline}
+
+
+
+\end{document}
